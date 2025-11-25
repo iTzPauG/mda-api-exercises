@@ -32,7 +32,7 @@ def verify_password(username, password):
     return None
 
 # Route to register new users
-@app.route('/users', methods=['   '])  # TODO: Fill in the HTTP method
+@app.route('/users', methods=['POST'])  # TODO: Fill in the HTTP method
 # Hint: Use 'POST' to create a user
 def register_user():
     """
@@ -59,11 +59,11 @@ def register_user():
 
     # TODO: Hash the password before storing it
     # Hint: Use generate_password_hash from Werkzeug library (imported at top)
-    users[username] = _____(password)
+    users[username] = generate_password_hash(password)
     return jsonify({"message": "User registered successfully"}), 201
 
 # Protected route to get the list of users
-@app.route('/users', methods=['   '])  # TODO: Fill in the HTTP method
+@app.route('/users', methods=['GET'])  # TODO: Fill in the HTTP method
 # Hint: Use 'GET' to list users
 @auth.login_required  # Requires HTTP Basic Authentication
 def get_users():
