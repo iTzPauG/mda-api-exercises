@@ -35,7 +35,7 @@ def register_student():
 
     # Hash the password before storing it
     students[username] = {
-        'password': generate_password_hash(password)
+        'password': generate_password_hash(password, method="pbkdf2:sha256")
     }
     return jsonify({'message': 'User registered successfully.'}), 201
 
@@ -45,7 +45,7 @@ def login():
     current_user = auth.current_user() #create_acces_something
     # TODO: Generate a JWT access token
     # Hint: Use create_access_token(identity=current_user)
-    access_token = _____(identity=current_user)
+    access_token = create_access_token(identity=current_user)
     return jsonify({'access_token': access_token}), 200
 
 @app.route('/profile', methods=['GET'])
@@ -53,14 +53,14 @@ def login():
 def profile():
     # TODO: Get the user's identity from the JWT token
     # Hint: Use get_jwt_identity()
-    current_user = _____() # get_something
+    current_user = auth.current_user() # get_something
     return jsonify({'profile': f'Profile information for {current_user}'}), 200
 
 @app.route('/weather', methods=['GET'])
 @jwt_required()
 def weather():
-    city = request.args.get('city', 'Madrid')
-    api_key = 'YOUR OPENWEATHER MAP API KEY' # Register on OpenWeatherMap to get your API Key
+    city = request.args.get('city', "")
+    api_key = '330bad59eae032dd591e75ff87c66742' # Register on OpenWeatherMap to get your API Key
     url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=en'
     response = requests.get(url)
     if response.status_code == 200:

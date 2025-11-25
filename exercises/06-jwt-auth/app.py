@@ -10,7 +10,7 @@ auth = HTTPBasicAuth()
 # WARNING: In production, use environment variables for secrets!
 # Example: app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
 app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'  # Hint: Change this to a secure secret key (only for educational purposes)
-jwt = _____(app)  # Hint: Initialize JWTManager with the app, check the library documentation.
+jwt = JWTManager(app)   # Hint: Initialize JWTManager with the app, check the library documentation.
 
 # Simulated database to store students
 students = {
@@ -36,21 +36,21 @@ def register_student():
 
     # Hash the password before storing it
     students[username] = {
-        'password': generate_password_hash(password)
+        'password': generate_password_hash(password, method="pbkdf2:sha256")
     }
     return jsonify({'message': 'User registered successfully.'}), 201
 
 @app.route('/login', methods=['POST'])
 @auth.login_required
 def login():
-    current_user = _____()  # Hint: Retrieve the currently authenticated user. Use a method from the 'auth' object.
-    access_token = _____(identity=current_user)  # Hint: Generate a JWT token. Use one of the functions from flask_jwt_extended imported above.
+    current_user = auth.current_user()  # Hint: Retrieve the currently authenticated user. Use a method from the 'auth' object.
+    access_token = create_access_token(identity=current_user) # Hint: Generate a JWT token. Use one of the functions from flask_jwt_extended imported above.
     return jsonify({'access_token': access_token}), 200
 
 @app.route('/profile', methods=['GET'])
 @jwt_required()
 def profile():
-    current_user = _____()  # Hint: Get the user's identity from the JWT token.
+    current_user = get_jwt_identity()  # Hint: Get the user's identity from the JWT token.
     return jsonify({'profile': f'Profile information for {current_user}'}), 200
 
 @app.route('/students', methods=['GET'])

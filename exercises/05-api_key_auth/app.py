@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
-import _____  # Hint: Import the necessary library to generate API Keys
+import uuid  # Hint: Import the necessary library to generate API Keys
 from functools import wraps
 
 app = Flask(__name__)
@@ -43,15 +43,15 @@ def register_user():
         return jsonify({'message': 'User is already registered.'}), 400
 
     # Generate and store the API Key
-    api_key = str(_____)  # Hint: Use a function to generate a unique API Key (use a method from the imported library)
+    api_key = str(uuid.uuid4())  # Hint: Use a function to generate a unique API Key (use a method from the imported library)
     users[username] = {
-        'password': generate_password_hash(password),
+        'password': generate_password_hash(password, method="pbkdf2:sha256"),
         'api_key': api_key
     }
 
     return jsonify({'message': 'User registered successfully.', 'api_key': api_key}), 201
 
-@app.route('/users', methods=['_____'])  # Hint: Indicate the correct HTTP method
+@app.route('/users', methods=['GET'])  # Hint: Indicate the correct HTTP method
 @auth.login_required
 @api_key_required
 def get_users():

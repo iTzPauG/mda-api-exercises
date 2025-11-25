@@ -7,7 +7,7 @@ auth = HTTPBasicAuth()
 
 # In-memory database for this example
 users = {
-    "admin": generate_password_hash("admin123")  # We are creating a test user here
+    "admin": generate_password_hash("admin123", method="pbkdf2:sha256")  # Use pbkdf2 to avoid missing scrypt
 }
 
 # Verify the provided credentials
@@ -59,7 +59,7 @@ def register_user():
 
     # TODO: Hash the password before storing it
     # Hint: Use generate_password_hash from Werkzeug library (imported at top)
-    users[username] = generate_password_hash(password)
+    users[username] = generate_password_hash(password, method="pbkdf2:sha256")
     return jsonify({"message": "User registered successfully"}), 201
 
 # Protected route to get the list of users
